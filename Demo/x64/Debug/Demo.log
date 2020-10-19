@@ -1,0 +1,50 @@
+﻿  demo.cpp
+e:\工作\demo_new\demo.cpp(28): warning C4244: “=”: 从“const float”转换到“unsigned short”，可能丢失数据
+e:\工作\demo_new\demo.cpp(40): warning C4244: “=”: 从“const float”转换到“unsigned short”，可能丢失数据
+e:\工作\demo_new\demo.cpp(52): warning C4244: “=”: 从“const float”转换到“unsigned short”，可能丢失数据
+e:\工作\demo_new\demo.cpp(70): warning C4244: “=”: 从“const float”转换到“unsigned short”，可能丢失数据
+e:\工作\demo_new\demo.cpp(71): warning C4244: “=”: 从“float”转换到“unsigned short”，可能丢失数据
+e:\工作\demo_new\demo.cpp(119): warning C4244: “=”: 从“const float”转换到“unsigned short”，可能丢失数据
+e:\工作\demo_new\demo.cpp(182): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+  Canny.cpp
+e:\工作\demo_new\canny.cpp(14): warning C4838: 从“double”转换到“float”需要收缩转换
+e:\工作\demo_new\canny.cpp(14): warning C4305: “初始化”: 从“double”到“float”截断
+e:\工作\demo_new\canny.cpp(94): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(104): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(128): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(129): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(134): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(149): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(238): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(449): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(450): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(468): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(469): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(474): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(484): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(485): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(491): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(503): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(504): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(558): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(559): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(563): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(669): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(670): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(717): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(734): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(735): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(751): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(752): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(754): warning C4305: “初始化”: 从“double”到“float”截断
+e:\工作\demo_new\canny.cpp(778): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(779): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(814): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\工作\demo_new\canny.cpp(837): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(841): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(847): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(866): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+e:\工作\demo_new\canny.cpp(874): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+  正在生成代码...
+  Demo.vcxproj -> E:\工作\Demo_New\x64\Debug\Demo.exe
+  Demo.vcxproj -> E:\工作\Demo_New\x64\Debug\Demo.pdb (Full PDB)
