@@ -43,13 +43,14 @@ protected:
 	void Gaussianconv();//高斯滤波
 	virtual void SobelGradDirction();	//计算图像梯度，根据梯度计算图像边缘幅值与角度
 	virtual void LocalMaxValue();		//非极大值抑制（边缘细化）
-	void DoubleThreshold();		//双阈值处理
+	virtual void DoubleThreshold();		//双阈值处理
 	void DoubleThresholdLink();	//中间像素处理及边缘链接
 
 	void SobelAmplitude();		//计算图像边缘幅值（X,Y方向的叠加）
 	void GetGaussianKernel(vector<vector<float>>& Kernel, const float sigmma = 1);		//获取高斯核
 	void SetThreshold();		//设定双阈值
 
+protected:
 	int imageWidth;
 	int imageHeight;
 	int guassKernelSize;
@@ -74,13 +75,13 @@ class MyCanny :public CannyBase{
 	/**************************环状伪影识别***********************/
 
 public:
-	MyCanny();
+	MyCanny(unsigned short* srcImage, int width, int height, int size);
 public:
 	//void Gaussianconv(unsigned short* pImageIn, int width, int height, const int size = 5);//高斯滤波
-	void SobelGradDirction();	//计算图像梯度，根据梯度计算图像边缘幅值与角度
-	void LocalMaxValue();		//非极大值抑制（边缘细化）
-	void DoubleThreshold();		//双阈值处理
-	void DoubleThresholdLink();	//中间像素处理及边缘链接
+	virtual void SobelGradDirction() override;	//计算图像梯度，根据梯度计算图像边缘幅值与角度
+	virtual void LocalMaxValue() override;		//非极大值抑制（边缘细化）
+	virtual void DoubleThreshold() override;		//双阈值处理
+	//void DoubleThresholdLink();	//中间像素处理及边缘链接
 	void LengthThresholdLink();	//设定长度阈值进行连接
 	void GetArtifactEdge();		//获取环状伪影
 
@@ -99,8 +100,8 @@ public:
 
 private:
 	//void GetGaussianKernel(vector<vector<float>>& Kernel,const int KernelSize = 5, const float sigmma = 1);//获取高斯核
-	void SobelAmplitude();		//计算图像边缘幅值（X,Y方向的叠加）
-	void SetThreshold();			//设定双阈值
+	//void SobelAmplitude();		//计算图像边缘幅值（X,Y方向的叠加）
+	//void SetThreshold();			//设定双阈值
 	void CalEdgeStartToEnd();		//求每列强边缘的最上和最下的两个点的纵坐标
 
 	void LinkHelp(vector<vector<int>>& flag, int T,int i,int j,int& End, vector<vector<float>>& pImageIn);			//连接

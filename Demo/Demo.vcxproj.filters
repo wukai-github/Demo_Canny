@@ -15,22 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\BinFile.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\demo.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Canny.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClInclude Include="BinFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Canny.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\BinFile.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Canny.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClCompile Include="BinFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Canny.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="demo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

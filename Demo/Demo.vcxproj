@@ -18,6 +18,15 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BinFile.h" />
+    <ClInclude Include="Canny.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BinFile.cpp" />
+    <ClCompile Include="Canny.cpp" />
+    <ClCompile Include="demo.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C3ED081E-EF6D-461D-B3A1-1A48284CFF36}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -74,7 +83,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\工作\Demo_New\cvinclude;E:\工作\Demo_New\cvlib;$(IncludePath)</IncludePath>
+    <IncludePath>E:\工作\Demo_New\cvinclude;E:\工作\Demo_New\cvlib;C:\Users\shoudahai\Desktop\Demo_New\Demo;$(IncludePath)</IncludePath>
     <LibraryPath>E:\工作\Demo_New\cvlib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -149,15 +158,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\BinFile.cpp" />
-    <ClCompile Include="..\Canny.cpp" />
-    <ClCompile Include="..\demo.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\BinFile.h" />
-    <ClInclude Include="..\Canny.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

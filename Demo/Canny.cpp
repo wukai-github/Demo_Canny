@@ -293,22 +293,16 @@ void CannyBase::DoubleThresholdLink()
 	m_imageLink.assign(m_imageDouble.begin(), m_imageDouble.end());
 	vector<pair<int, int>> flag;//用来记录处于双阈值之间的点
 	int change = 0;//记录变化的点的个数
-	for (int i = 0; i <imageHeight; i++)
-	{
-		for (int j = 0; j < imageWidth; j++)
-		{
-			if (m_imageLink[i][j] > m_lowThreshold&&m_imageLink[i][j] <= m_highThreshold)
-			{
+	for (int i = 0; i <imageHeight; i++){
+		for (int j = 0; j < imageWidth; j++){
+			if (m_imageLink[i][j] > m_lowThreshold&&m_imageLink[i][j] <= m_highThreshold){
 				if (m_imageLink[i - 1][j - 1] == 65535 || m_imageLink[i - 1][j] == 65535 || m_imageLink[i - 1][j + 1] == 65535 ||
 					m_imageLink[i][j - 1] == 65535 || m_imageLink[i][j + 1] == 65535 || m_imageLink[i + 1][j - 1] == 65535 ||
-					m_imageLink[i + 1][j] == 65535 || m_imageLink[i + 1][j + 1] == 65535)
-				{
+					m_imageLink[i + 1][j] == 65535 || m_imageLink[i + 1][j + 1] == 65535){
 					m_imageLink[i][j] = 65535;
 					change++;
 				}
-				else
-				{
-					//imageInput[i][j] = 0;
+				else{
 					flag.push_back(make_pair(i, j));
 				}
 			}
@@ -367,9 +361,10 @@ void CannyBase::CannyEdgeDetect() {
 
 
 
-MyCanny::MyCanny() {
+MyCanny::MyCanny(unsigned short* srcImage, int width, int height, int size)
+	:CannyBase(srcImage,width,height,size) {
 
-}
+};
 
 //void MyCanny::GetGaussianKernel(vector<vector<float>>& Kernel, const int KernelSize , const float sigmma ) {
 //	int centerX = int(KernelSize / 2); // 0, 1, 2, 3, 4
@@ -444,18 +439,19 @@ MyCanny::MyCanny() {
 //存储梯度膜长与梯度角
 void MyCanny::SobelGradDirction()
 {
-	if (m_imageGauss.empty()) return;
+	if (m_imageGauss.empty()) {
+		cout << "MyCanny GuassImage empty ！" << endl;
+		return;
+	}
 
-	int height = m_imageGauss.size();
-	int width = m_imageGauss[0].size();
-	m_imageSobelX.resize(height, vector<float>(width, 0));
-	m_imageSobelY.resize(height, vector<float>(width, 0));
-	m_SobelAmpXY.resize(height, vector<float>(width, 0));
-	m_pointDrection.resize(height, vector<float>(width, 0));
+	m_imageSobelX.resize(imageHeight, vector<float>(imageWidth, 0));
+	m_imageSobelY.resize(imageHeight, vector<float>(imageWidth, 0));
+	m_SobelAmpXY.resize(imageHeight, vector<float>(imageWidth, 0));
+	m_pointDrection.resize(imageHeight, vector<float>(imageWidth, 0));
 
-	for (int i = m_filterCenter; i < height - m_filterCenter; ++i)
+	for (int i = m_filterCenter; i < imageHeight - m_filterCenter; ++i)
 	{
-		for (int j = m_filterCenter; j < width - m_filterCenter; ++j)
+		for (int j = m_filterCenter; j < imageWidth - m_filterCenter; ++j)
 		{
 			double gradX = 0;
 			double gradY = 0;
@@ -479,19 +475,19 @@ void MyCanny::SobelGradDirction()
 	SobelAmplitude();
 }
 
-void MyCanny::SobelAmplitude()
-{
-	int height = m_imageSobelX.size();
-	int width = m_imageSobelX[0].size();
-	for (int i = m_filterCenter; i<height- m_filterCenter; i++)
-	{
-		for (int j = m_filterCenter; j<width- m_filterCenter; j++)
-		{
-			double ampXY = sqrt(m_imageSobelX[i][j] * m_imageSobelX[i][j] + m_imageSobelY[i][j] * m_imageSobelY[i][j]);
-			m_SobelAmpXY[i][j] = ampXY > 65535 ? 65535 : ampXY;
-		}
-	}
-}
+//void MyCanny::SobelAmplitude()
+//{
+//	int height = m_imageSobelX.size();
+//	int width = m_imageSobelX[0].size();
+//	for (int i = m_filterCenter; i<height- m_filterCenter; i++)
+//	{
+//		for (int j = m_filterCenter; j<width- m_filterCenter; j++)
+//		{
+//			double ampXY = sqrt(m_imageSobelX[i][j] * m_imageSobelX[i][j] + m_imageSobelY[i][j] * m_imageSobelY[i][j]);
+//			m_SobelAmpXY[i][j] = ampXY > 65535 ? 65535 : ampXY;
+//		}
+//	}
+//}
 
 
 //******************非极大值抑制*************************
@@ -500,23 +496,26 @@ void MyCanny::SobelAmplitude()
 //第五个参数pointDrection是图像上每个点的梯度方向数组指针
 //*************************************************************
 void MyCanny::LocalMaxValue(){
-	int height = m_SobelAmpXY.size();
-	int width = m_SobelAmpXY[0].size();
+	if (m_SobelAmpXY.empty()) {
+		cout << "MyCanny m_SobelAmpXY empty ！" << endl;
+		return;
+	}
+
 	float g1 = 0, g2 = 0, g3 = 0, g4 = 0;                            //用于进行插值，得到亚像素点坐标值   
 	double dTmp1 = 0.0, dTmp2 = 0.0;                           //保存两个亚像素点插值得到的灰度数据 
 	double dWeight = 0.0;                                    //插值的权重  
 	m_nonMaximum.assign(m_SobelAmpXY.begin(), m_SobelAmpXY.end());
 
 	//设定的角度阈值为45°
-	for (int i = m_filterCenter; i < height - m_filterCenter; i++)
+	for (int i = 0; i < imageHeight ; i++)
 	{
-		for (int j = m_filterCenter; j < width - m_filterCenter; j++)
+		for (int j = 0; j < imageWidth; j++)
 		{
-			if (m_SobelAmpXY[i][j] == 0) {
+			if (m_SobelAmpXY[i][j] < 1e-6) {
 				continue;
 			}
 			else {
-				//150~180
+				//178.5~180
 				if (m_pointDrection[i][j] >= 178.5 && m_pointDrection[i][j]<180)
 				{
 					g1 = m_SobelAmpXY[i - 1][j - 1];
@@ -527,7 +526,7 @@ void MyCanny::LocalMaxValue(){
 					dTmp1 = g1*dWeight + (1 - dWeight)*g2;
 					dTmp2 = g4*dWeight + (1 - dWeight)*g3;
 				}
-				//0~30
+				//0~1.5
 				else if (m_pointDrection[i][j] >= 0 && m_pointDrection[i][j]<1.5)
 				{
 					g1 = m_SobelAmpXY[i - 1][j + 1];
@@ -549,52 +548,57 @@ void MyCanny::LocalMaxValue(){
 	}
 }
 
-//双阈值的选取
-void MyCanny::SetThreshold() {
-	int nHist[65536]{ 0 };//直方图
-	int nEdgeNum = 0;//所有边缘点的数目
-	int nMaxMag = 0;//最大梯度的幅值
-
-	int height = m_nonMaximum.size();
-	int width = m_nonMaximum[0].size();
-
-	for (int i = m_filterCenter; i < height- m_filterCenter; ++i) {
-		for (int j = m_filterCenter; j < width- m_filterCenter; ++j) {
-			int nindex = m_nonMaximum[i][j];
-			if (nindex > 0) {
-				nHist[nindex]++;
-				nEdgeNum++;
-				nMaxMag = max(nindex, nMaxMag);
-			}	
-		}
-	}
-
-	//计算两个阈值 注意是梯度的阈值
-	double dRateHigh = 0.5;
-	double dRateLow = 0.5;
-	int nHightcount = (int)(dRateHigh*nEdgeNum + 0.5);
-	int count = 0;
-	nEdgeNum = nHist[1];
-	while ((nEdgeNum <= nHightcount) && (count < nMaxMag - 1)) {
-		count++;
-		nEdgeNum += nHist[count];
-	}
-	m_highThreshold = double(count);
-	m_lowThreshold = m_highThreshold*dRateLow;
-}
+////双阈值的选取
+//void MyCanny::SetThreshold() {
+//	int nHist[65536]{ 0 };//直方图
+//	int nEdgeNum = 0;//所有边缘点的数目
+//	int nMaxMag = 0;//最大梯度的幅值
+//
+//	int height = m_nonMaximum.size();
+//	int width = m_nonMaximum[0].size();
+//
+//	for (int i = m_filterCenter; i < height- m_filterCenter; ++i) {
+//		for (int j = m_filterCenter; j < width- m_filterCenter; ++j) {
+//			int nindex = m_nonMaximum[i][j];
+//			if (nindex > 0) {
+//				nHist[nindex]++;
+//				nEdgeNum++;
+//				nMaxMag = max(nindex, nMaxMag);
+//			}	
+//		}
+//	}
+//
+//	//计算两个阈值 注意是梯度的阈值
+//	double dRateHigh = 0.5;
+//	double dRateLow = 0.5;
+//	int nHightcount = (int)(dRateHigh*nEdgeNum + 0.5);
+//	int count = 0;
+//	nEdgeNum = nHist[1];
+//	while ((nEdgeNum <= nHightcount) && (count < nMaxMag - 1)) {
+//		count++;
+//		nEdgeNum += nHist[count];
+//	}
+//	m_highThreshold = double(count);
+//	m_lowThreshold = m_highThreshold*dRateLow;
+//}
 
 
 void MyCanny::DoubleThreshold()
 {
+	if (m_nonMaximum.empty()) {
+		cout << "m_nonMaximum empty ！" << endl;
+		return;
+	}
+
 	m_imageDouble.assign(m_nonMaximum.begin(), m_nonMaximum.end());
 	m_imageEdgeStart.assign(m_nonMaximum.begin(), m_nonMaximum.end());
 
-	//获得高阈值和低阈值  高阈值为70%，低阈值为50%高阈值
+	//获得高阈值和低阈值  高阈值为50%，低阈值为50%高阈值
 	SetThreshold();
 
-	for (int i = m_filterCenter; i<m_nonMaximum.size()- m_filterCenter; i++)
+	for (int i = 0; i < imageHeight; i++)
 	{
-		for (int j = m_filterCenter; j<m_nonMaximum[0].size()- m_filterCenter; j++)
+		for (int j = 0; j < imageWidth; j++) 
 		{
 			m_imageEdgeStart[i][j] = 0;
 			if (m_nonMaximum[i][j]>m_highThreshold)
@@ -611,80 +615,82 @@ void MyCanny::DoubleThreshold()
 	}
 }
 
-void MyCanny::DoubleThresholdLink()
-{
-	m_imageLink.assign(m_imageDouble.begin(), m_imageDouble.end());
-	vector<pair<int,int>> flag;//用来记录处于双阈值之间的点
-	int change = 0;//记录变化的点的个数
-	for (int i = m_filterCenter; i < m_imageLink.size() - m_filterCenter; i++)
-	{
-		for (int j = m_filterCenter; j < m_imageLink[0].size() - m_filterCenter; j++)
-		{
-			if (m_imageLink[i][j] > m_lowThreshold&&m_imageLink[i][j] <= m_highThreshold)
-			{
-				if (m_imageLink[i - 1][j - 1] == 65535 || m_imageLink[i - 1][j] == 65535 || m_imageLink[i - 1][j + 1] == 65535 ||
-					m_imageLink[i][j - 1] == 65535 || m_imageLink[i][j + 1] == 65535 || m_imageLink[i + 1][j - 1] == 65535 ||
-					m_imageLink[i + 1][j] == 65535 || m_imageLink[i + 1][j + 1] == 65535)
-				{
-					m_imageLink[i][j] = 65535;
-					change++;
-				}
-				else
-				{
-					//imageInput[i][j] = 0;
-					flag.push_back(make_pair(i, j));
-				}
-			}
-		}
-	}
-
-	while (change > 0&&!flag.empty()) {
-		change = 0;
-		vector<pair<int, int>> tempflag;
-		for (auto it:flag)
-		{
-			int i = it.first;
-			int j = it.second;
-			if (m_imageLink[i - 1][j - 1] == 65535 || m_imageLink[i - 1][j] == 65535 || m_imageLink[i - 1][j + 1] == 65535 ||
-				m_imageLink[i][j - 1] == 65535 || m_imageLink[i][j + 1] == 65535 || m_imageLink[i + 1][j - 1] == 65535 ||
-				m_imageLink[i + 1][j] == 65535 || m_imageLink[i + 1][j + 1] == 65535)
-			{
-				m_imageLink[i][j] = 65535;
-				change++;
-			}
-			else {
-				tempflag.push_back(it);
-			}
-		}
-		flag = tempflag;
-	}
-	for (auto it : flag) {
-		int i = it.first;
-		int j = it.second;
-		m_imageLink[i][j] = 0;
-	}
-}
+//void MyCanny::DoubleThresholdLink()
+//{
+//	m_imageLink.assign(m_imageDouble.begin(), m_imageDouble.end());
+//	vector<pair<int,int>> flag;//用来记录处于双阈值之间的点
+//	int change = 0;//记录变化的点的个数
+//	for (int i = m_filterCenter; i < m_imageLink.size() - m_filterCenter; i++)
+//	{
+//		for (int j = m_filterCenter; j < m_imageLink[0].size() - m_filterCenter; j++)
+//		{
+//			if (m_imageLink[i][j] > m_lowThreshold&&m_imageLink[i][j] <= m_highThreshold)
+//			{
+//				if (m_imageLink[i - 1][j - 1] == 65535 || m_imageLink[i - 1][j] == 65535 || m_imageLink[i - 1][j + 1] == 65535 ||
+//					m_imageLink[i][j - 1] == 65535 || m_imageLink[i][j + 1] == 65535 || m_imageLink[i + 1][j - 1] == 65535 ||
+//					m_imageLink[i + 1][j] == 65535 || m_imageLink[i + 1][j + 1] == 65535)
+//				{
+//					m_imageLink[i][j] = 65535;
+//					change++;
+//				}
+//				else
+//				{
+//					//imageInput[i][j] = 0;
+//					flag.push_back(make_pair(i, j));
+//				}
+//			}
+//		}
+//	}
+//
+//	while (change > 0&&!flag.empty()) {
+//		change = 0;
+//		vector<pair<int, int>> tempflag;
+//		for (auto it:flag)
+//		{
+//			int i = it.first;
+//			int j = it.second;
+//			if (m_imageLink[i - 1][j - 1] == 65535 || m_imageLink[i - 1][j] == 65535 || m_imageLink[i - 1][j + 1] == 65535 ||
+//				m_imageLink[i][j - 1] == 65535 || m_imageLink[i][j + 1] == 65535 || m_imageLink[i + 1][j - 1] == 65535 ||
+//				m_imageLink[i + 1][j] == 65535 || m_imageLink[i + 1][j + 1] == 65535)
+//			{
+//				m_imageLink[i][j] = 65535;
+//				change++;
+//			}
+//			else {
+//				tempflag.push_back(it);
+//			}
+//		}
+//		flag = tempflag;
+//	}
+//	for (auto it : flag) {
+//		int i = it.first;
+//		int j = it.second;
+//		m_imageLink[i][j] = 0;
+//	}
+//}
 
 void MyCanny::LengthThresholdLink() {
-	int height = m_nonMaximum.size();
-	int width = m_nonMaximum[0].size();
-	vector<vector<int>> flag0(height, vector<int>(width, 0));
+	if (m_nonMaximum.empty()) {
+		cout << "MyCanny m_nonMaximum empty ！" << endl;
+		return;
+	}
+	vector<vector<int>> flag0(imageHeight, vector<int>(imageWidth, 0));
 	vector<vector<int>> flag1(flag0);
-	m_imageLink.resize(height,vector<float>(width,0));
+	m_imageLink.resize(imageHeight, vector<float>(imageWidth, 0));
 
 	int T0 = 2;			//连接长度阈值
 	int T1 = T0 * 2;
 
 	vector<vector<float>> temp(m_nonMaximum);
-	for (int j = 0; j < width; ++j) {
+	for (int j = 0; j < imageWidth; ++j) {
 		int preEnd = 0;
-		for (int i = 0; i < height; ++i) {
+		for (int i = 0; i < imageHeight; ++i) {
 			if (flag0[i][j] == 1) continue;
 			if (m_imageEdgeStart[i][j] == 65535) {
 				int pre = preEnd;
 				LinkHelp(flag0, T0, i, j,preEnd, temp);
 
-				if (preEnd!=pre&&(i - pre <= T0 * 2)) {
+				if (preEnd != pre && (i - pre <= T0 * 2)) {
 					for (int m = pre + 1; m < i; ++m) {
 						temp[m][j] = 65535;
 					}
@@ -714,10 +720,9 @@ void MyCanny::LengthThresholdLink() {
 }
 
 void MyCanny::LinkHelp(vector<vector<int>>& flag,int T,int i,int j,int& End,vector<vector<float>>& pImageIn) {
-	int height = pImageIn.size();
 	int begin = i;
 	int end = i;
-	while (i < height&&pImageIn[i][j] !=0) {
+	while (i < imageHeight && pImageIn[i][j] != 0) {
 		flag[i][j] = 1;
 		end = i;
 		i++;
@@ -731,15 +736,12 @@ void MyCanny::LinkHelp(vector<vector<int>>& flag,int T,int i,int j,int& End,vect
 }
 
 void MyCanny::CalEdgeStartToEnd() {
-	int height = m_imageEdgeStart.size();
-	int width = m_imageEdgeStart[0].size();
-	//m_startToEnd.resize(width, make_pair(0, 0));
-	for (int i = 0; i < width; ++i) {
-		int start = 0, end = height - 1;
-		while (start<height&&m_imageEdgeStart[start][i] == 0) {
+	for (int i = 0; i < imageWidth; ++i) {
+		int start = 0, end = imageHeight - 1;
+		while (start < end && m_imageEdgeStart[start][i] == 0) {
 			start++;
 		}
-		while (end>start&&m_imageEdgeStart[end][i] == 0) {
+		while (end > start && m_imageEdgeStart[end][i] == 0) {
 			end--;
 		}
 		m_startToEnd.push_back(make_pair(start, end));
@@ -747,15 +749,20 @@ void MyCanny::CalEdgeStartToEnd() {
 }
 
 void MyCanny::GetArtifactEdge() {
+	if (m_imageEdgeStart.empty()) {
+		cout << "MyCanny m_imageEdgeStart empty ！" << endl;
+		return;
+	}
 	CalEdgeStartToEnd();
-	int height = m_imageEdgeStart.size();
-	int width = m_imageEdgeStart[0].size();
-	m_imageArtifact.resize(height, vector<float>(width, 0));
-	float ratio = 0.07;		
 
-	for (int i = 0; i < width; ++i) {
-		int end = m_startToEnd[i].second;
-		int start = m_startToEnd[i].first;
+	m_imageArtifact.resize(imageHeight, vector<float>(imageWidth, 0));
+	float ratio = 0.07;		
+	int start = 0;
+	int end = 0;
+
+	for (int i = 0; i < imageWidth; ++i) {
+		start = m_startToEnd[i].first;
+		end = m_startToEnd[i].second;
 		if (end <= start) continue;
 		int linknum = 0;
 		//统计强边缘起始点和终止点之间存在的像素个数
@@ -774,18 +781,21 @@ void MyCanny::GetArtifactEdge() {
 
 
 void MyCanny::ArtifactCorrect(){
+	if (m_srcImage.empty()) {
+		cout << "MyCanny m_srcImage empty ！" << endl;
+		return;
+	}
 	m_desImage.assign(m_srcImage.begin(), m_srcImage.end());
-	int height = m_srcImage.size();
-	int width = m_srcImage[0].size();
+
 	int divide = 30;	//将图像在竖直方向分为divide段进行拟合
-	int num = height / divide;
+	int num = imageHeight / divide;
 	vector<CPosition> bSlineNode;
 
 
 	for (int k = 0; k < divide; ++k) {
 		vector<pair<int,double>> artifact;	//伪影处的横坐标和该段的列均值
 
-		for (int j = 0; j < width; ++j) {
+		for (int j = 0; j < imageWidth; ++j) {
 			bool hasArtifact = false;	//伪影段标识
 			double	meanVal = 0;		//该段 每列的列均值
 
